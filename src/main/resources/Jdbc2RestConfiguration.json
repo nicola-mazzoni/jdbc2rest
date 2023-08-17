@@ -1,0 +1,31 @@
+{
+	"datasource": {
+		"driver": "com.ibm.as400.access.AS400JDBCDriver",
+		"url": "jdbc:as400://10.0.0.251;naming=system;libraries=WLFDAT",
+		"username": "WNICOLA",
+		"password": "MPS2022",
+		"queryTimeout": 60,
+		"maxRecordReturned": 100
+	},
+	"server": {
+		"port": 8080
+	},
+	"users": [
+		{
+			"name": "Test User 1",
+			"token": "prova2",
+			"auth": [
+				"SELECT",
+				"UPDATE"
+			]
+		},
+		{
+			"name": "Test User 2",
+			"token": "prova",
+			"auth": [
+				"INSERT", 
+				"SELECT"
+			]
+		}
+	]
+}
