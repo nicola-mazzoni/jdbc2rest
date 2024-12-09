@@ -80,7 +80,7 @@ public class Jdbc2RestRouteBuilder extends RouteBuilder {
 		 * .to("file:/tmp/?fileName=HealthCheck_${date:now:yyyy_MM_dd_hhmmss}.json");
 		 */
 
-		rest("/jdbc2rest").get("/v1").type(Request.class).outType(Response.class)
+		rest("/jdbc2rest").post("/v1").type(Request.class).outType(Response.class)
 				.to("bean:jdbc2rest.services.SqlExecutor");
 
 	}

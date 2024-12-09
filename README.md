@@ -48,7 +48,7 @@ Jdbc2Rest allows you to access any jdbc compliant database in REST mode. A simpl
 * test with curl
 
 ```bash
-curl -k -X GET -H "Content-Type: application/json" -d '{"sql":"SELECT * FROM MYTABLE", "token"  : "OgFYDQB6xSjXQuObfuJ2MYYzXRX0pviKwcExmAXqUBgYdeE9B1IBLIkgTlH4JU3j"}' http://localhost:8080/jdbc2rest/v1
+curl -k -X POST -H "Content-Type: application/json" -d '{"sql":"SELECT * FROM MYTABLE", "token"  : "OgFYDQB6xSjXQuObfuJ2MYYzXRX0pviKwcExmAXqUBgYdeE9B1IBLIkgTlH4JU3j"}' http://localhost:8080/jdbc2rest/v1
 ```
 
 
