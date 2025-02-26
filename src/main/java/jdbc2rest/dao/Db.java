@@ -1,58 +1,71 @@
 package jdbc2rest.dao;
 
-import java.io.IOException;
 import java.sql.Connection;
-import java.util.Properties;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import jdbc2rest.MainProcessing;
-import jdbc2rest.services.SqlExecutor;
+import jdbc2rest.entities.configuration.Datasource;
 
 public class Db {
 
-	private DataSource dataSource = null;
+	private static Db instance;
+	private static DataSource dataSource;
 
-	private static final Logger log = LoggerFactory.getLogger(Db.class);
+	public Db() {
+		try {
+			Datasource dataSourceConf = new Datasource();
+			dataSourceConf = MainProcessing.getJdbc2RestConfiguration().getDatasource();
 
-	public Db() throws Exception {
+			PoolProperties p = new PoolProperties();
+			p.setDriverClassName(dataSourceConf.getDriver());
+			p.setUrl(dataSourceConf.getUrl());
+			p.setUsername(dataSourceConf.getUsername());
+			p.setPassword(dataSourceConf.getPassword());
 
-		PoolProperties p = new PoolProperties();
-		p.setUrl(MainProcessing.getJdbc2RestConfiguration().getDatasource().getUrl());
-		p.setDriverClassName(MainProcessing.getJdbc2RestConfiguration().getDatasource().getDriver());
-		p.setUsername(MainProcessing.getJdbc2RestConfiguration().getDatasource().getUsername());
-		p.setPassword(MainProcessing.getJdbc2RestConfiguration().getDatasource().getPassword());
+			// Configurazione Pooling
+			p.setMinIdle(dataSourceConf.getMinIdle());
+			p.setMaxIdle(dataSourceConf.getMaxIdle());
+			p.setMaxActive(dataSourceConf.getMaxActive());
+			p.setMaxWait(dataSourceConf.getMaxWait());
+			p.setMinEvictableIdleTimeMillis(dataSourceConf.getMinEvictableIdleTimeMillis());
 
-		if (MainProcessing.getJdbc2RestConfiguration().getDatasource().getQueryTimeout() > 0) {
-			p.setRemoveAbandonedTimeout(MainProcessing.getJdbc2RestConfiguration().getDatasource().getQueryTimeout());
-			p.setLogAbandoned(true);
-			p.setRemoveAbandoned(true);
+			// Validazione Connessione
+			p.setTestOnBorrow(dataSourceConf.getTestOnBorrow());
+			p.setTestWhileIdle(dataSourceConf.getTestWhileIdle());
+			p.setValidationQuery(dataSourceConf.getValidationQuery());
+			p.setTimeBetweenEvictionRunsMillis(dataSourceConf.getTimeBetweenEvictionRunsMillis());
+
+			// Rimozione Connessioni Abbandonate
+			p.setRemoveAbandoned(dataSourceConf.getRemoveAbandoned());
+			p.setRemoveAbandonedTimeout(dataSourceConf.getRemoveAbandonedTimeout());
+			p.setLogAbandoned(dataSourceConf.getLogAbandoned());
+
+			dataSource = new DataSource();
+			dataSource.setPoolProperties(p);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Errore nella configurazione del pool di connessioni", e);
 		}
-
-		// p.setJmxEnabled(true);
-		// p.setTestWhileIdle(false);
-		// p.setTestOnBorrow(true);
-		// p.setValidationQuery("SELECT 1");
-		// p.setTestOnReturn(false);
-		// p.setValidationInterval(30000);
-		// p.setTimeBetweenEvictionRunsMillis(30000);
-		// p.setMaxActive(100);
-		// p.setInitialSize(10);
-		// p.setMaxWait(10000);
-		// p.setMinEvictableIdleTimeMillis(30000);
-		// p.setMinIdle(10);
-		// p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
-
-		dataSource = new DataSource();
-		dataSource.setPoolProperties(p);
-
 	}
 
-	public Connection getConnection() throws Exception {
-		return this.dataSource.getConnection();
+	public static Db getInstance() {
+		if (instance == null) {
+			synchronized (Db.class) {
+				if (instance == null) {
+					instance = new Db();
+				}
+			}
+		}
+		return instance;
 	}
 
+	public Connection getConnection() {
+		try {
+			return dataSource.getConnection();
+		} catch (Exception e) {
+			throw new RuntimeException("Errore nel recupero della connessione", e);
+		}
+	}
 }

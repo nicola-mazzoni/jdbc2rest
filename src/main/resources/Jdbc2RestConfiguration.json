@@ -1,31 +1,36 @@
 {
-	"datasource": {
-		"driver": "com.ibm.as400.access.AS400JDBCDriver",
-		"url": "jdbc:as400://10.0.0.251;naming=system;libraries=WLFDAT",
-		"username": "WNICOLA",
-		"password": "MPS2022",
-		"queryTimeout": 60,
-		"maxRecordReturned": 100
-	},
-	"server": {
-		"port": 8080
-	},
-	"users": [
-		{
-			"name": "Test User 1",
-			"token": "prova2",
-			"auth": [
-				"SELECT",
-				"UPDATE"
-			]
-		},
-		{
-			"name": "Test User 2",
-			"token": "prova",
-			"auth": [
-				"INSERT", 
-				"SELECT"
-			]
-		}
-	]
+  "datasource": {
+    "driver": "com.ibm.as400.access.AS400JDBCDriver",
+    "url": "jdbc:as400://10.0.0.251;naming=system;libraries=WLFDAT",
+    "username": "WNICOLA",
+    "password": "MPS2022",
+    "minIdle": 5,
+    "maxIdle": 60,
+    "maxActive": 50,
+    "maxWait": 30000,
+    "minEvictableIdleTimeMillis": 30000,
+    "testOnBorrow": true,
+    "testWhileIdle": true,
+    "validationQuery": "SELECT 1",
+    "timeBetweenEvictionRunsMillis": 60000,
+    "removeAbandoned": true,
+    "removeAbandonedTimeout": 30,
+    "logAbandoned": true,
+	"maxRecordReturned": 1000
+  },
+  "server": {
+    "port": 8080
+  },
+  "users": [
+    {
+      "name": "Test User 1",
+      "token": "prova2",
+      "auth": ["SELECT", "UPDATE"]
+    },
+    {
+      "name": "Test User 2",
+      "token": "prova",
+      "auth": ["INSERT", "SELECT"]
+    }
+  ]
 }
