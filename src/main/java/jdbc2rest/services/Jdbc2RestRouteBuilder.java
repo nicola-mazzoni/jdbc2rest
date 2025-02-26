@@ -55,11 +55,10 @@ public class Jdbc2RestRouteBuilder extends RouteBuilder {
 			}
 
 		} else {
-			
+
 			restConfiguration().component("jetty").host("0.0.0.0").port(port).scheme("http")
 					.bindingMode(RestBindingMode.json);
 			logger.warn("SSL NOT ACTIVE, DATA TRANSFERT NOT SECURE");
-
 
 		}
 
@@ -71,9 +70,13 @@ public class Jdbc2RestRouteBuilder extends RouteBuilder {
 		 * .to("file:/tmp/?fileName=HealthCheck_${date:now:yyyy_MM_dd_hhmmss}.json");
 		 */
 
-		rest("/jdbc2rest").post("/v1").type(Request.class).outType(Response.class)
+		rest("/jdbc2rest").type(Request.class).outType(Response.class)
+				.post("/v1")
+				.to("direct:jdbc2rest");
+
+		from("direct:jdbc2rest")
+				.throttle(100)
 				.to("bean:jdbc2rest.services.SqlExecutor");
 
 	}
-
 }
