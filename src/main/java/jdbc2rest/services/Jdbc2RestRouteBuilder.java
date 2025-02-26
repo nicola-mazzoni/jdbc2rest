@@ -1,26 +1,17 @@
 package jdbc2rest.services;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Properties;
-import org.apache.camel.Exchange;
-import org.apache.camel.LoggingLevel;
-import org.apache.camel.Message;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jetty.JettyHttpComponent;
-import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.apache.camel.support.jsse.KeyManagersParameters;
 import org.apache.camel.support.jsse.KeyStoreParameters;
 import org.apache.camel.support.jsse.SSLContextParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jdbc2rest.MainProcessing;
 import jdbc2rest.entities.Request;
 import jdbc2rest.entities.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Jdbc2RestRouteBuilder extends RouteBuilder {
 
