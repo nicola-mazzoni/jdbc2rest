@@ -19,7 +19,7 @@ public class Jdbc2RestRouteBuilder extends RouteBuilder {
 	public void configure() throws Exception {
 
 		final Logger logger = LoggerFactory.getLogger(Jdbc2RestRouteBuilder.class);
-		// TODO Auto-generated method stub
+
 		String port = new Integer(MainProcessing.getJdbc2RestConfiguration().getServer().getPort()).toString();
 
 		if (MainProcessing.getJdbc2RestConfiguration().getServer().getSsl() != null) {
