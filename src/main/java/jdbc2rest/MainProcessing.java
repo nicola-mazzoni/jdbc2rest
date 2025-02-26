@@ -1,23 +1,15 @@
 package jdbc2rest;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.io.File;
 
+import org.apache.camel.main.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.camel.main.Main;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jdbc2rest.entities.configuration.Jdbc2RestConfiguration;
 import jdbc2rest.services.Jdbc2RestRouteBuilder;
-import jdbc2rest.services.SqlExecutor;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MainProcessing {
 
