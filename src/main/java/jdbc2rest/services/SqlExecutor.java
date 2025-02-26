@@ -21,7 +21,7 @@ public class SqlExecutor {
 
 	private static final Logger log = LoggerFactory.getLogger(SqlExecutor.class);
 
-	public Response SqlExecutor(Request req) {
+	public Response Executor(Request req) {
 		Response res = new Response();
 
 		try {
