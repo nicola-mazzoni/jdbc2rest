@@ -92,9 +92,9 @@ I also added limit and offset to make pagination easier, especially for dbms (IB
 * fine grained security token
 * xml e csv return data
 * complete REST to SQL sintax passing json object
-** POST->INSERT 
-** PUT->UPDATE
-** DELETE->DELETE
+* 	POST->INSERT
+* 	PUT->UPDATE
+* 	DELETE->DELETE
 
 
 **Support**
