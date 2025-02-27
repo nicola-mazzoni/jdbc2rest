@@ -96,6 +96,21 @@ I also added limit and offset to make pagination easier, especially for dbms (IB
 * 	PUT->UPDATE
 * 	DELETE->DELETE
 
+# SSH Key Setup for GitHub Actions
+## 1️⃣ Generate and Set SSH Key on the Remote Machine (if it doesn't exist already)
+```sh
+ssh-keygen -t rsa -b 4096 -C "github-actions" -f github-actions-key
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+touch ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+echo "PUBLIC KEY" > ~/.ssh/authorized_keys
+```
+## 2️⃣ Copy the Private Key to the Machine that Needs to Connect to the Remote Machine
+```sh
+chmod 600 github-actions-key
+ssh -i github-actions-key username@10.10.10.10
+```
 
 **Support**
 

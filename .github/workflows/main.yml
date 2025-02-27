@@ -19,6 +19,23 @@ jobs:
         distribution: 'temurin' # See 'Supported distributions' for available options
         java-version: '17'
 
+    - name: Cache dipendenze Maven
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          maven-
+
+    #- name: Analisi del codice con SonarQube
+    #  run: mvn sonar:sonar -Dsonar.organization=riccardo2001 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+    #- name: Pubblica su GitHub Packages
+    #  run: mvn deploy
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
     - name: Build with Maven
       run: mvn clean install -DskipTests  # Esegui la build Maven (puoi includere i test, se necessario)
 
@@ -38,3 +55,25 @@ jobs:
     - name: Push Docker image
       run: |
         docker push riklupo2001/jdbc2rest:latest  # Pusha l'immagine nel Docker registry
+    
+    - name: Install FortiClient
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-0 libnss3 libgconf-2-4 libasound2
+          wget -O - https://repo.fortinet.com/repo/6.4/ubuntu/DEB-GPG-KEY | sudo apt-key add -
+          deb [arch=amd64] https://repo.fortinet.com/repo/6.4/ubuntu/ /bionic multiverse
+          sudo apt-get update
+          sudo apt install forticlient
+          sudo apt-get install -f  # Installa le dipendenze mancanti
+
+    - name: Connect to VPN using FortiClient
+      run: |
+        # Connetti alla VPN (sostituisci con i tuoi dettagli)
+        sudo forticlient vpn -c -h ${{ secrets.VPN_IP_ADDRESS }} -u ${{ secrets.VPN_USERNAME }} -p ${{ secrets.VPN_PASSWORD }}
+
+    #- name: Wait for VPN to connect
+    #  run: sleep 10 # Attendere la connessione VPN
+
+    #- name: Deploy su server remoto
+    #  run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USER_SERVER }} "docker pull riklupo2001/jdbc2rest:latest && docker-compose up -d"
+
