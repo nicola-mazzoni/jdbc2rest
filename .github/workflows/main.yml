@@ -33,8 +33,8 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t riccardo2001/jdbc2rest:latest .  # Costruisce l'immagine Docker
+        docker build -t riklupo2001/jdbc2rest:latest .  # Costruisce l'immagine Docker
 
     - name: Push Docker image
       run: |
-        docker push riccardo2001/jdbc2rest:latest  # Pusha l'immagine nel Docker registry
+        docker push riklupo2001/jdbc2rest:latest  # Pusha l'immagine nel Docker registry
