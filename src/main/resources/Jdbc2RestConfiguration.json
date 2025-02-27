@@ -19,7 +19,8 @@
 	"maxRecordReturned": 1000
   },
   "server": {
-    "port": 8080
+    "port": 8080,
+    "throttle" : 100
   },
   "users": [
     {

@@ -25,7 +25,8 @@
         "jks": "/home/nicola/MAIN/PRJ/PROGETTI/ZalandoRetail/src/main/resources/keystore.jks",
         "password": "nicola"
       }
-    }
+    },
+    "throttle" : 100
   },
   "users": [
     {
