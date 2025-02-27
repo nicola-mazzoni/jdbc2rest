@@ -56,22 +56,25 @@ jobs:
       run: |
         docker push riklupo2001/jdbc2rest:latest  # Pusha l'immagine nel Docker registry
     
-    - name: Install FortiClient
+    - name: Install FortiClient dependencies
       run: |
+        # Aggiungi la chiave GPG
+        curl -fsSL https://repo.fortinet.com/repo/6.4/ubuntu/DEB-GPG-KEY | sudo tee /etc/apt/trusted.gpg.d/fortinet.asc
+
+        # Aggiungi il repository FortiClient
+        echo "deb https://repo.fortinet.com/repo/6.4/ubuntu/ stable main" | sudo tee /etc/apt/sources.list.d/fortinet.list
+
+        # Aggiorna il repository e installa FortiClient
         sudo apt-get update
-        wget -O - https://repo.fortinet.com/repo/6.4/ubuntu/DEB-GPG-KEY | sudo apt-key add -
-        deb [arch=amd64] https://repo.fortinet.com/repo/6.4/ubuntu/ /bionic multiverse
-        sudo apt-get update
-        sudo apt install forticlient
-        sudo apt-get install -f  # Installa le dipendenze mancanti
+        sudo apt-get install -y forticlient
 
     - name: Connect to VPN using FortiClient
       run: |
-        # Connetti alla VPN (sostituisci con i tuoi dettagli)
-        sudo forticlient vpn -c -h ${{ secrets.VPN_IP_ADDRESS }} -u ${{ secrets.VPN_USERNAME }} -p ${{ secrets.VPN_PASSWORD }}
+        # Connetti alla VPN usando le credenziali
+        sudo forticlient vpn -c -h your-vpn-server-address -u ${{ secrets.VPN_USERNAME }} -p ${{ secrets.VPN_PASSWORD }}
 
-    #- name: Wait for VPN to connect
-    #  run: sleep 10 # Attendere la connessione VPN
+    - name: Wait for VPN to connect
+      run: sleep 10 # Attendere la connessione VPN
 
     #- name: Deploy su server remoto
     #  run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USER_SERVER }} "docker pull riklupo2001/jdbc2rest:latest && docker-compose up -d"
