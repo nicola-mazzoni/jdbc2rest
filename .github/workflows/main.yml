@@ -37,4 +37,4 @@ jobs:
 
     - name: Push Docker image
       run: |
-        docker push myusername/jdbc2rest:latest  # Pusha l'immagine nel Docker registry
+        docker push riccardo2001/jdbc2rest:latest  # Pusha l'immagine nel Docker registry
