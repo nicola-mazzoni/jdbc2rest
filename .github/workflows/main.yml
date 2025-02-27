@@ -57,14 +57,14 @@ jobs:
         docker push riklupo2001/jdbc2rest:latest  # Pusha l'immagine nel Docker registry
     
     - name: Install FortiClient
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-0 libnss3 libgconf-2-4 libasound2
-          wget -O - https://repo.fortinet.com/repo/6.4/ubuntu/DEB-GPG-KEY | sudo apt-key add -
-          deb [arch=amd64] https://repo.fortinet.com/repo/6.4/ubuntu/ /bionic multiverse
-          sudo apt-get update
-          sudo apt install forticlient
-          sudo apt-get install -f  # Installa le dipendenze mancanti
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtk-3-0 libnss3 libgconf-2-4 libasound2
+        wget -O - https://repo.fortinet.com/repo/6.4/ubuntu/DEB-GPG-KEY | sudo apt-key add -
+        deb [arch=amd64] https://repo.fortinet.com/repo/6.4/ubuntu/ /bionic multiverse
+        sudo apt-get update
+        sudo apt install forticlient
+        sudo apt-get install -f  # Installa le dipendenze mancanti
 
     - name: Connect to VPN using FortiClient
       run: |
