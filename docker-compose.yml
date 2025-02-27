@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  jdbc2rest:
+    image: riklupo2001/jdbc2rest:latest
+    container_name: jdbc2rest
+    restart: always
