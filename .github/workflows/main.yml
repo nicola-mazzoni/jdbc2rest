@@ -1,0 +1,90 @@
+name: Publish Docker Image
+
+on:
+  push:
+    branches:
+      - master  # Si attiva quando viene fatto un push sulla branch 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4  # Esegue il checkout del codice
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin' # See 'Supported distributions' for available options
+        java-version: '17'
+
+    - name: Cache dipendenze Maven
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2
+        key: maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          maven-
+
+    #- name: Analisi del codice con SonarQube
+    #  run: mvn sonar:sonar -Dsonar.organization=riccardo2001 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+    #- name: Pubblica su GitHub Packages
+    #  run: mvn deploy
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+    - name: Build with Maven
+      run: mvn clean install -DskipTests  # Esegui la build Maven (puoi includere i test, se necessario)
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3  # Imposta Docker Buildx per build multi-architettura
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}  # Username di Docker Hub (salvato in Secrets)
+        password: ${{ secrets.DOCKER_PASSWORD }}  # Password di Docker Hub (salvato in Secrets)
+
+    - name: Build Docker image
+      run: |
+        docker build -t riklupo2001/jdbc2rest:latest .  # Costruisce l'immagine Docker
+
+    - name: Push Docker image
+      run: |
+        docker push riklupo2001/jdbc2rest:latest  # Pusha l'immagine nel Docker registry
+    
+    - name: Install FortiClient
+      run: |
+        sudo apt-get update
+        wget -O - https://repo.fortinet.com/repo/forticlient/7.4/ubuntu22/DEB-GPG-KEY | gpg --dearmor | sudo tee /usr/share/keyrings/repo.fortinet.com.gpg
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/repo.fortinet.com.gpg] https://repo.fortinet.com/repo/forticlient/7.4/ubuntu22/ stable non-free" | sudo tee /etc/apt/sources.list.d/repo.fortinet.com.list
+        sudo apt-get update
+        sudo apt install forticlient
+        sudo apt-get install -f  # Installa le dipendenze mancanti
+
+    - name: Create VPN profile "your-vpn-name" using FortiClient
+      run: |
+        cat <<EOF | forticlient vpn edit your-vpn-name
+        1
+        ${{ secrets.VPN_IP_ADDRESS }}
+        #{{ secrets.VPN_PORT }}
+        2
+        ${{ secrets.VPN_USERNAME }}
+        3
+        EOF
+
+    - name: Connect to VPN using FortiClient
+      run: |
+        cat <<EOF | forticlient vpn connect your-vpn-name
+        ${{ secrets.VPN_PASSWORD }}
+        1
+        EOF
+    #- name: Wait for VPN to connect
+    #  run: sleep 10 # Attendere la connessione VPN
+
+    #- name: Deploy su server remoto
+    #  run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USER_SERVER }} "docker pull riklupo2001/jdbc2rest:latest && docker-compose up -d"
+
