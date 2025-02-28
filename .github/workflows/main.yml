@@ -79,7 +79,7 @@ jobs:
     - name: Connect to VPN using FortiClient
       run: |
         # Connetti alla VPN utilizzando il nome del profilo configurato
-        sudo forticlient vpn connect your-vpn-name
+        forticlient vpn connect your-vpn-name
     #- name: Wait for VPN to connect
     #  run: sleep 10 # Attendere la connessione VPN
 
