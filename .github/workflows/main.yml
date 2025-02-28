@@ -56,64 +56,64 @@ jobs:
       run: |
         docker push riklupo2001/jdbc2rest:latest  # Pusha l'immagine nel Docker registry
     
-    - name: Install FortiClient
-      run: |
-        sudo apt-get update
-        wget -O - https://repo.fortinet.com/repo/forticlient/7.4/ubuntu22/DEB-GPG-KEY | gpg --dearmor | sudo tee /usr/share/keyrings/repo.fortinet.com.gpg
-        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/repo.fortinet.com.gpg] https://repo.fortinet.com/repo/forticlient/7.4/ubuntu22/ stable non-free" | sudo tee /etc/apt/sources.list.d/repo.fortinet.com.list
-        sudo apt-get update
-        sudo apt install forticlient
-        sudo apt-get install -f  # Installa le dipendenze mancanti
+    #- name: Install FortiClient
+    #  run: |
+    #    sudo apt-get update
+    #    wget -O - https://repo.fortinet.com/repo/forticlient/7.4/ubuntu22/DEB-GPG-KEY | gpg --dearmor | sudo tee /usr/share/keyrings/repo.fortinet.com.gpg
+    #    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/repo.fortinet.com.gpg] https://repo.fortinet.com/repo/forticlient/7.4/ubuntu22/ stable non-free" | sudo tee /etc/apt/sources.list.d/repo.fortinet.com.list
+    #    sudo apt-get update
+    #    sudo apt install forticlient
+    #    sudo apt-get install -f  # Installa le dipendenze mancanti
 
-    - name: Create VPN profile "your-vpn-name" using FortiClient
-      run: |
-        cat <<EOF | forticlient vpn edit your-vpn-name
-        1
-        ${{ secrets.VPN_IP_ADDRESS }}
-        ${{ secrets.VPN_PORT }}
-        2
-        ${{ secrets.VPN_USERNAME }}
-        3
-        EOF
+    #- name: Create VPN profile "your-vpn-name" using FortiClient
+    #  run: |
+    #    cat <<EOF | forticlient vpn edit your-vpn-name
+    #    1
+    #    ${{ secrets.VPN_IP_ADDRESS }}
+    #    ${{ secrets.VPN_PORT }}
+    #    2
+    #    ${{ secrets.VPN_USERNAME }}
+    #    3
+    #    EOF
 
-    - name: Install Expect
-      run: sudo apt-get install -y expect
+    #- name: Install Expect
+    #  run: sudo apt-get install -y expect
 
-    - name: Connect to VPN using FortiClient
-      run: |
-        # Crea lo script in un file temporaneo
-        echo '#!/usr/bin/expect' > connect_vpn.sh
-        echo 'set vpn_name "your-vpn-name"' >> connect_vpn.sh
-        echo 'set vpn_password ${{ secrets.VPN_PASSWORD }}' >> connect_vpn.sh
-        echo '' >> connect_vpn.sh
-        echo '# Avvia il comando di connessione VPN' >> connect_vpn.sh
-        echo 'spawn forticlient vpn connect $vpn_name' >> connect_vpn.sh
-        echo '' >> connect_vpn.sh
-        echo '# Gestisce il prompt per la password' >> connect_vpn.sh
-        echo 'expect "Password:" { send "$vpn_password\r" }' >> connect_vpn.sh
-        echo '' >> connect_vpn.sh
-        echo '# Gestisce il prompt per confermare la connessione' >> connect_vpn.sh
-        echo 'expect "Confirm (y/n)" { send "y\r" }' >> connect_vpn.sh
-        echo '' >> connect_vpn.sh
-        echo '# Attendi la fine della connessione' >> connect_vpn.sh
-        echo 'expect eof' >> connect_vpn.sh
+    #- name: Connect to VPN using FortiClient
+    #  run: |
+    #    # Crea lo script in un file temporaneo
+    #    echo '#!/usr/bin/expect' > connect_vpn.sh
+    #    echo 'set vpn_name "your-vpn-name"' >> connect_vpn.sh
+    #    echo 'set vpn_password ${{ secrets.VPN_PASSWORD }}' >> connect_vpn.sh
+    #    echo '' >> connect_vpn.sh
+    #    echo '# Avvia il comando di connessione VPN' >> connect_vpn.sh
+    #    echo 'spawn forticlient vpn connect $vpn_name' >> connect_vpn.sh
+    #    echo '' >> connect_vpn.sh
+    #    echo '# Gestisce il prompt per la password' >> connect_vpn.sh
+    #    echo 'expect "Password:" { send "$vpn_password\r" }' >> connect_vpn.sh
+    #    echo '' >> connect_vpn.sh
+    #    echo '# Gestisce il prompt per confermare la connessione' >> connect_vpn.sh
+    #    echo 'expect "Confirm (y/n)" { send "y\r" }' >> connect_vpn.sh
+    #    echo '' >> connect_vpn.sh
+    #    echo '# Attendi la fine della connessione' >> connect_vpn.sh
+    #    echo 'expect eof' >> connect_vpn.sh
 
         # Assegna i permessi di esecuzione al file
-        chmod +x connect_vpn.sh
+    #    chmod +x connect_vpn.sh
 
         # Esegui lo script
-        ./connect_vpn.sh
+    #    ./connect_vpn.sh
 
-    - name: Wait for VPN to connect
-      run: sleep 10 # Attendere la connessione VPN
+    #- name: Wait for VPN to connect
+    #  run: sleep 10 # Attendere la connessione VPN
 
-    - name: Ping test Remote Gateway
-      run: |
-        ping -c 5 ${{ secrets.SSH_SERVER }}
+    #- name: Ping test Remote Gateway
+    #  run: |
+    #    ping -c 5 ${{ secrets.SSH_SERVER }}
 
-    - name: Disconnecting to VPN using FortiClient
-      run: |
-        forticlient vpn disconnect
+    #- name: Disconnecting to VPN using FortiClient
+    #  run: |
+    #    forticlient vpn disconnect
 
     
 
