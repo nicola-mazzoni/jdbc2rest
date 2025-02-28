@@ -88,7 +88,7 @@ jobs:
       run: |
         cat <<EOF | forticlient vpn connect your-vpn-name
         ${{ secrets.VPN_PASSWORD }}
-        1
+        y
         EOF
     - name: Wait for VPN to connect
       run: sleep 10 # Attendere la connessione VPN
