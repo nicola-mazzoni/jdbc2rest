@@ -78,7 +78,7 @@ jobs:
         cat <<EOF | forticlient vpn edit your-vpn-name
         1
         ${{ secrets.VPN_IP_ADDRESS }}
-        #{{ secrets.VPN_PORT }}
+        ${{ secrets.VPN_PORT }}
         2
         ${{ secrets.VPN_USERNAME }}
         3
