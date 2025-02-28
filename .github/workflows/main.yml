@@ -68,7 +68,7 @@ jobs:
     - name: Connect to VPN using FortiClient
       run: |
         # Connetti alla VPN (sostituisci con i tuoi dettagli)
-        sudo forticlient vpn -c -h ${{ secrets.VPN_IP_ADDRESS }} -u ${{ secrets.VPN_USERNAME }} -p ${{ secrets.VPN_PASSWORD }}
+        sudo forticlient vpn connect -h your-vpn-server-address -u ${{ secrets.VPN_USERNAME }} -p ${{ secrets.VPN_PASSWORD }}
 
     #- name: Wait for VPN to connect
     #  run: sleep 10 # Attendere la connessione VPN
