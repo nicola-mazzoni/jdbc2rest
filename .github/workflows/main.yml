@@ -65,16 +65,10 @@ jobs:
         sudo apt install forticlient
         sudo apt-get install -f  # Installa le dipendenze mancanti
 
-    - name: Create VPN profile
+    - name: Create VPN profile "pippo breve" using FortiClient
       run: |
-        # Crea la directory per la configurazione se non esiste
-        sudo mkdir -p /etc/forticlient/
-
-        # Crea il file di configurazione della VPN
-        echo "[your-vpn-name]" | sudo tee /etc/forticlient/vpn_profile.conf
-        echo "host=${{ secrets.VPN_SERVER }}" | sudo tee -a /etc/forticlient/vpn_profile.conf
-        echo "username=${{ secrets.VPN_USERNAME }}" | sudo tee -a /etc/forticlient/vpn_profile.conf
-        echo "password=${{ secrets.VPN_PASSWORD }}" | sudo tee -a /etc/forticlient/vpn_profile.conf
+        # Crea il profilo VPN usando i comandi FortiClient
+        sudo forticlient vpn edit "pippo breve" --host ${{ secrets.VPN_SERVER }} --username ${{ secrets.VPN_USERNAME }} --password ${{ secrets.VPN_PASSWORD }}
 
     - name: Connect to VPN using FortiClient
       run: |
