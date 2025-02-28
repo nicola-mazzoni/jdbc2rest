@@ -86,12 +86,16 @@ jobs:
 
     - name: Connect to VPN using FortiClient
       run: |
-        cat <<EOF | forticlient vpn connect your-vpn-name
+        yes | forticlient vpn connect your-vpn-name <<EOF
         ${{ secrets.VPN_PASSWORD }}
-        y
         EOF
+
     - name: Wait for VPN to connect
       run: sleep 10 # Attendere la connessione VPN
+
+    - name: Disconnecting to VPN using FortiClient
+      run: |
+        forticlient vpn disconnect
 
     #- name: Deploy su server remoto
     #  run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USER_SERVER }} "docker pull riklupo2001/jdbc2rest:latest && docker-compose up -d"
