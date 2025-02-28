@@ -67,13 +67,21 @@ jobs:
 
     - name: Create VPN profile "your-vpn-name" using FortiClient
       run: |
-        # Crea il profilo VPN usando i comandi FortiClient
-        sudo forticlient vpn edit your-vpn-name --host ${{ secrets.VPN_SERVER }} --username ${{ secrets.VPN_USERNAME }} --password ${{ secrets.VPN_PASSWORD }}
+        cat <<EOF | forticlient vpn edit your-vpn-name
+        1
+        ${{ secrets.VPN_IP_ADDRESS }}
+        #{{ secrets.VPN_PORT }}
+        2
+        ${{ secrets.VPN_USERNAME }}
+        3
+        EOF
 
     - name: Connect to VPN using FortiClient
       run: |
-        # Connetti alla VPN utilizzando il nome del profilo configurato
-        forticlient vpn connect your-vpn-name
+        cat <<EOF | forticlient vpn connect your-vpn-name
+        ${{ secrets.VPN_PASSWORD }}
+        1
+        EOF
     #- name: Wait for VPN to connect
     #  run: sleep 10 # Attendere la connessione VPN
 
