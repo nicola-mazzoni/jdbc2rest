@@ -78,7 +78,7 @@ jobs:
 
     - name: Install Expect
       run: sudo apt-get install -y expect
-      
+
     - name: Connect to VPN using FortiClient
       run: |
         # Crea lo script in un file temporaneo
@@ -107,9 +107,15 @@ jobs:
     - name: Wait for VPN to connect
       run: sleep 10 # Attendere la connessione VPN
 
+    - name: Ping test Remote Gateway
+      run: |
+        ping -c 5 ${{ secrets.SSH_SERVER }}
+
     - name: Disconnecting to VPN using FortiClient
       run: |
         forticlient vpn disconnect
+
+    
 
     #- name: Deploy su server remoto
     #  run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.SSH_USER_SERVER }} "docker pull riklupo2001/jdbc2rest:latest && docker-compose up -d"
