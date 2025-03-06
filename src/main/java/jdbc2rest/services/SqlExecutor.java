@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,13 +66,16 @@ public class SqlExecutor {
 
 			log.info("request authorized");
 
-			Connection conn = Db.getInstance().getConnection();
+			try (Connection conn = Db.getInstance().getConnection();
+					Statement stmt = conn.createStatement();
+					ResultSet rs = stmt.executeQuery(req.getSql())) {
 
-			ResultSet rs = conn.createStatement().executeQuery(req.getSql());
+				List<LinkedHashMap<String, Object>> recs = resultSetToList(rs, req.getOffset(), req.getLimit());
+				res.setRecords(recs);
 
-			List<LinkedHashMap<String, Object>> recs = resultSetToList(rs, req.getOffset(), req.getLimit());
-
-			res.setRecords(recs);
+			} catch (Exception e) {
+				throw new Exception(e);
+			}
 
 			log.info("...request closed");
 
