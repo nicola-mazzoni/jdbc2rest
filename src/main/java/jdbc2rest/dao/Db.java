@@ -13,7 +13,7 @@ public class Db {
 	private static Db instance;
 	private static DataSource dataSource;
 
-	public Db() {
+	private Db() {
 		try {
 			Datasource dataSourceConf = new Datasource();
 			dataSourceConf = MainProcessing.getJdbc2RestConfiguration().getDatasource();

@@ -65,16 +65,13 @@ public class SqlExecutor {
 
 			log.info("request authorized");
 
-			Db db = new Db();
-			Connection conn = db.getConnection();
+			Connection conn = Db.getInstance().getConnection();
 
 			ResultSet rs = conn.createStatement().executeQuery(req.getSql());
 
 			List<LinkedHashMap<String, Object>> recs = resultSetToList(rs, req.getOffset(), req.getLimit());
 
 			res.setRecords(recs);
-
-			conn.close();
 
 			log.info("...request closed");
 
