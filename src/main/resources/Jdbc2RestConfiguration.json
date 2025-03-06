@@ -16,6 +16,7 @@
     "removeAbandoned": true,
     "removeAbandonedTimeout": 30,
     "logAbandoned": true,
+    "testOnReturn": true,
 	"maxRecordReturned": 1000
   },
   "server": {

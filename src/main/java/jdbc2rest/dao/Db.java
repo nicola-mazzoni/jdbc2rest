@@ -44,6 +44,9 @@ public class Db {
 			p.setRemoveAbandonedTimeout(dataSourceConf.getRemoveAbandonedTimeout());
 			p.setLogAbandoned(dataSourceConf.getLogAbandoned());
 
+			p.setTestOnReturn(dataSourceConf.getTestOnReturn());
+			
+
 			// Initialize the DataSource with the configured properties
 			dataSource = new DataSource();
 			dataSource.setPoolProperties(p);
