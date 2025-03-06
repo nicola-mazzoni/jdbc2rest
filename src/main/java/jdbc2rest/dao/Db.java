@@ -1,6 +1,7 @@
 package jdbc2rest.dao;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
@@ -15,8 +16,8 @@ public class Db {
 
 	private Db() {
 		try {
-			Datasource dataSourceConf = new Datasource();
-			dataSourceConf = MainProcessing.getJdbc2RestConfiguration().getDatasource();
+			// Get database configuration from your configuration system
+			Datasource dataSourceConf = MainProcessing.getJdbc2RestConfiguration().getDatasource();
 
 			PoolProperties p = new PoolProperties();
 			p.setDriverClassName(dataSourceConf.getDriver());
@@ -24,29 +25,31 @@ public class Db {
 			p.setUsername(dataSourceConf.getUsername());
 			p.setPassword(dataSourceConf.getPassword());
 
-			// Configurazione Pooling
+			// Connection Pooling Configuration
 			p.setMinIdle(dataSourceConf.getMinIdle());
 			p.setMaxIdle(dataSourceConf.getMaxIdle());
 			p.setMaxActive(dataSourceConf.getMaxActive());
 			p.setMaxWait(dataSourceConf.getMaxWait());
 			p.setMinEvictableIdleTimeMillis(dataSourceConf.getMinEvictableIdleTimeMillis());
 
-			// Validazione Connessione
+			// Connection Validation
 			p.setTestOnBorrow(dataSourceConf.getTestOnBorrow());
 			p.setTestWhileIdle(dataSourceConf.getTestWhileIdle());
 			p.setValidationQuery(dataSourceConf.getValidationQuery());
 			p.setTimeBetweenEvictionRunsMillis(dataSourceConf.getTimeBetweenEvictionRunsMillis());
 
-			// Rimozione Connessioni Abbandonate
+			// Abandoned Connection Removal
 			p.setRemoveAbandoned(dataSourceConf.getRemoveAbandoned());
 			p.setRemoveAbandonedTimeout(dataSourceConf.getRemoveAbandonedTimeout());
 			p.setLogAbandoned(dataSourceConf.getLogAbandoned());
 
+			// Initialize the DataSource with the configured properties
 			dataSource = new DataSource();
 			dataSource.setPoolProperties(p);
 
 		} catch (Exception e) {
-			throw new RuntimeException("Errore nella configurazione del pool di connessioni", e);
+			e.printStackTrace(); // Log the full stack trace for debugging
+			throw new RuntimeException("Errore nella configurazione del pool di connessioni: " + e.getMessage(), e);
 		}
 	}
 
@@ -61,11 +64,28 @@ public class Db {
 		return instance;
 	}
 
-	public Connection getConnection() {
+	public Connection getConnection() throws SQLException {
+		if (dataSource == null) {
+			System.out.println("ERROR: DataSource is null");
+			throw new SQLException("DataSource not initialized");
+		}
+
 		try {
-			return dataSource.getConnection();
-		} catch (Exception e) {
-			throw new RuntimeException("Errore nel recupero della connessione", e);
+			System.out.println("Attempting to get connection...");
+			System.out.println("DataSource stats: Active=" + dataSource.getNumActive() +
+					", Idle=" + dataSource.getNumIdle() +
+					", Max=" + dataSource.getMaxActive());
+			Connection conn = dataSource.getConnection();
+			if (conn == null) {
+				System.out.println("ERROR: Got null connection from pool");
+				throw new SQLException("Unable to obtain connection from pool");
+			}
+			System.out.println("Successfully obtained connection");
+			return conn;
+		} catch (SQLException e) {
+			System.out.println("ERROR getting connection: " + e.getMessage());
+			e.printStackTrace();
+			throw e;
 		}
 	}
 }
