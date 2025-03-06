@@ -11,11 +11,12 @@
     "minEvictableIdleTimeMillis": 30000,
     "testOnBorrow": true,
     "testWhileIdle": true,
-    "validationQuery": "SELECT 1",
+    "validationQuery": "SELECT 1 FROM SYSIBM.SYSDUMMY1",
     "timeBetweenEvictionRunsMillis": 60000,
     "removeAbandoned": true,
     "removeAbandonedTimeout": 30,
     "logAbandoned": true,
+    "testOnReturn": true,
 	"maxRecordReturned": 1000
   },
   "server": {

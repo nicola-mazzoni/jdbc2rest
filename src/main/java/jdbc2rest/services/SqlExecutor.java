@@ -73,8 +73,14 @@ public class SqlExecutor {
 				List<LinkedHashMap<String, Object>> recs = resultSetToList(rs, req.getOffset(), req.getLimit());
 				res.setRecords(recs);
 
+			} catch (SQLException e) {
+				System.err.println("Errore SQL: " + e.getMessage());
+				e.printStackTrace();
+				throw new Exception("Errore nell'esecuzione della query: " + e.getMessage(), e);
 			} catch (Exception e) {
-				throw new Exception(e);
+				System.err.println("Errore generico: " + e.getMessage());
+				e.printStackTrace();
+				throw new Exception("Errore durante l'elaborazione: " + e.getMessage(), e);
 			}
 
 			log.info("...request closed");
