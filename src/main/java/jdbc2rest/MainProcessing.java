@@ -23,8 +23,6 @@ public class MainProcessing {
 
 		CamelContext camelContext = new DefaultCamelContext();
 
-        camelContext.getRegistry().bind("db", new Db());
-
         try {
 
             camelContext.addRoutes(new Jdbc2RestRouteBuilder());
