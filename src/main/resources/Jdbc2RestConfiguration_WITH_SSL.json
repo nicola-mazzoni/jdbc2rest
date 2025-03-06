@@ -12,6 +12,7 @@
     "testOnBorrow": true,
     "testWhileIdle": true,
     "validationQuery": "SELECT 1",
+    "validationQueryTimeout": 15000,
     "timeBetweenEvictionRunsMillis": 60000,
     "removeAbandoned": true,
     "removeAbandonedTimeout": 30,

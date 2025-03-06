@@ -19,6 +19,7 @@ public class Datasource {
 	private int removeAbandonedTimeout;
 	private boolean logAbandoned;
 	private int maxRecordReturned;
+	private int validationQueryTimeout;
 
 	public String getDriver() {
 		return driver;
@@ -170,6 +171,14 @@ public class Datasource {
 
 	public void setMaxRecordReturned(int maxRecordReturned) {
 		this.maxRecordReturned = maxRecordReturned;
+	}
+
+	public int getValidationQueryTimeout() {
+		return this.validationQueryTimeout;
+	}
+
+	public void setValidationQueryTimeout(int validationQueryTimeout) {
+		this.validationQueryTimeout = validationQueryTimeout;
 	}
 
 }

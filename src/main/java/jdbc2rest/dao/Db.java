@@ -36,6 +36,7 @@ public class Db {
 			p.setTestOnBorrow(dataSourceConf.getTestOnBorrow());
 			p.setTestWhileIdle(dataSourceConf.getTestWhileIdle());
 			p.setValidationQuery(dataSourceConf.getValidationQuery());
+			p.setValidationQueryTimeout(dataSourceConf.getValidationQueryTimeout());
 			p.setTimeBetweenEvictionRunsMillis(dataSourceConf.getTimeBetweenEvictionRunsMillis());
 
 			// Abandoned Connection Removal
