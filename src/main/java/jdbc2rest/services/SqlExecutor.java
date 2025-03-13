@@ -44,7 +44,12 @@ public class SqlExecutor {
 				return res;
 			}
 
-			String SqlClause = req.getSql().substring(0, req.getSql().indexOf(" "));
+			// Estrazione sicura del comando SQL
+			String sqlTrimmed = req.getSql().trim();
+			int firstSpaceIndex = sqlTrimmed.indexOf(" ");
+			String SqlClause = firstSpaceIndex > 0 ? 
+					sqlTrimmed.substring(0, firstSpaceIndex).toUpperCase() : 
+					sqlTrimmed.toUpperCase();
 
 			boolean isAuthorized = false;
 			List<User> users = MainProcessing.getJdbc2RestConfiguration().getUsers();
@@ -67,20 +72,37 @@ public class SqlExecutor {
 			log.info("request authorized");
 
 			try (Connection conn = Db.getInstance().getConnection();
-					Statement stmt = conn.createStatement();
-					ResultSet rs = stmt.executeQuery(req.getSql())) {
-
-				List<LinkedHashMap<String, Object>> recs = resultSetToList(rs, req.getOffset(), req.getLimit());
-				res.setRecords(recs);
+					Statement stmt = conn.createStatement()) {
+                
+                // Determinare se è una query di tipo SELECT o altro (UPDATE, INSERT, DELETE)
+                boolean isSelectQuery = SqlClause.equals("SELECT");
+                
+                if (isSelectQuery) {
+                    // Esecuzione per query SELECT
+                    try (ResultSet rs = stmt.executeQuery(req.getSql())) {
+                        List<LinkedHashMap<String, Object>> recs = resultSetToList(rs, req.getOffset(), req.getLimit());
+                        res.setRecords(recs);
+                    }
+                } else {
+                    // Esecuzione per query non-SELECT (INSERT, UPDATE, DELETE)
+                    int rowsAffected = stmt.executeUpdate(req.getSql());
+                    LinkedHashMap<String, Object> resultMap = new LinkedHashMap<>();
+                    resultMap.put("rowsAffected", rowsAffected);
+                    
+                    List<LinkedHashMap<String, Object>> resultList = new ArrayList<>();
+                    resultList.add(resultMap);
+                    res.setRecords(resultList);
+                    res.setMessage(SqlClause + " completed. Affected rows: " + rowsAffected);
+                }
 
 			} catch (SQLException e) {
-				System.err.println("Errore SQL: " + e.getMessage());
+				System.err.println("SQL Error: " + e.getMessage());
 				e.printStackTrace();
-				throw new Exception("Errore nell'esecuzione della query: " + e.getMessage(), e);
+				throw new Exception("Error executing query: " + e.getMessage(), e);
 			} catch (Exception e) {
-				System.err.println("Errore generico: " + e.getMessage());
+				System.err.println("Generic Error: " + e.getMessage());
 				e.printStackTrace();
-				throw new Exception("Errore durante l'elaborazione: " + e.getMessage(), e);
+				throw new Exception("Error during processing: " + e.getMessage(), e);
 			}
 
 			log.info("...request closed");
@@ -88,6 +110,7 @@ public class SqlExecutor {
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
+			res.setMessage("Error: " + e.getMessage());
 		}
 
 		return res;
